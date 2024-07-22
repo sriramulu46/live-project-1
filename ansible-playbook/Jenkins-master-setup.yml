@@ -1,0 +1,128 @@
+
+
+---
+- name: Install Jenkins
+  hosts: jenkins-master
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Java (Jenkins dependency)
+      apt:
+        name: openjdk-11-jre
+        state: present
+
+    - name: Add Jenkins repository key
+      apt_key:
+        url: https://pkg.jenkins.io/debian/jenkins.io.key
+        state: present
+
+    - name: Add Jenkins repository
+      apt_repository:
+        repo: deb http://pkg.jenkins.io/debian-stable binary/
+        state: present
+
+    - name: Update apt cache after adding Jenkins repo
+      apt:
+        update_cache: yes
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: present
+
+    - name: Start and enable Jenkins service
+      systemd:
+        name: jenkins
+        state: started
+        enabled: true
+    - name: Cat the initialAdminPassword
+      ansible.builtin.shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: install_admin_password
+    - name: Display the contect in initialAdminPassword
+      debug:
+        var: install_admin_password.stdout_lines
+
+
+==================
+
+
+---
+- name: Install Jenkins
+  hosts: jenkins-master
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+    
+    - name: Install Java (Jenkins dependency) 
+      apt:
+        name: openjdk-11-jre
+        state: present
+
+    - name: Add Jenkins repository key using keyserver
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 5BA31D57EF5975CA
+        state: present
+
+    - name: Add Jenkins repository
+      apt_repository:
+        repo: deb http://pkg.jenkins.io/debian-stable binary/
+        state: present
+
+    - name: Update apt cache after adding Jenkins repo
+      apt:
+        update_cache: yes
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: present
+
+    - name: Start and enable Jenkins service
+      systemd:
+        name: jenkins
+        state: started
+        enabled: true
+
+    - name: Check Jenkins service status
+      command: systemctl status jenkins.service
+      register: jenkins_status
+      ignore_errors: yes
+
+    - name: Debug Jenkins service status
+      debug:
+        msg: "{{ jenkins_status.stdout }}"
+
+    - name: Check Jenkins service logs
+      command: journalctl -xeu jenkins.service
+      register: jenkins_logs
+      ignore_errors: yes
+
+    - name: Debug Jenkins service logs
+      debug:
+        msg: "{{ jenkins_logs.stdout }}"
+
+    - name: Retrieve the initialAdminPassword
+      ansible.builtin.shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: install_admin_password
+
+    - name: Display the content of initialAdminPassword
+      debug:
+        var: install_admin_password.stdout_lines
+    
+    - name: Download Maven package
+      get_url:
+      url: https://dlcdn.apache.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz
+      dest: /opt/
+    - name: Extracting Maven Package
+      unarchive:
+        src: /opt/apache-maven-3.9.8-bin.tar.gz
+        dest: /opt
+        remote_src: yes
