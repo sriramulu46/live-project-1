@@ -24,6 +24,7 @@ pipeline {
             // Build happens here 
             // Only build should happen, no tests should be available
             steps {
+                 echo "JAVA_HOME is ${env.JAVA_HOME}"
                 echo "Building the ${env.APPLICATION_NAME} application"
                 // maven build should happpen here 
                 sh "mvn clean package -DskipTests=true"
