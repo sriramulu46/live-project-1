@@ -5,7 +5,7 @@ pipeline {
     } 
     tools {
         maven 'maven-3.9.4'
-        jdk 'jdk-11'
+        jdk 'jdk-17'
     }
     environment {
         APPLICATION_NAME = "eureka"
