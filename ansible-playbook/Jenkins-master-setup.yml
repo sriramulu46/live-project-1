@@ -1,55 +1,3 @@
-
-
----
-- name: Install Jenkins
-  hosts: jenkins-master
-  become: true
-
-  tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-
-    - name: Install Java (Jenkins dependency)
-      apt:
-        name: openjdk-11-jre
-        state: present
-
-    - name: Add Jenkins repository key
-      apt_key:
-        url: https://pkg.jenkins.io/debian/jenkins.io.key
-        state: present
-
-    - name: Add Jenkins repository
-      apt_repository:
-        repo: deb http://pkg.jenkins.io/debian-stable binary/
-        state: present
-
-    - name: Update apt cache after adding Jenkins repo
-      apt:
-        update_cache: yes
-
-    - name: Install Jenkins
-      apt:
-        name: jenkins
-        state: present
-
-    - name: Start and enable Jenkins service
-      systemd:
-        name: jenkins
-        state: started
-        enabled: true
-    - name: Cat the initialAdminPassword
-      ansible.builtin.shell: cat /var/lib/jenkins/secrets/initialAdminPassword
-      register: install_admin_password
-    - name: Display the contect in initialAdminPassword
-      debug:
-        var: install_admin_password.stdout_lines
-
-
-==================
-
-
 ---
 - name: Install Jenkins
   hosts: jenkins-master
@@ -60,10 +8,17 @@
       apt:
         update_cache: yes
     
-    - name: Install Java (Jenkins dependency) 
-      apt:
-        name: openjdk-11-jre
-        state: present
+     - name: Download java Package
+      get_url:
+        url: https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-x64_bin.tar.gz
+        dest: /opt/
+    - name: Extracting Java Package
+      unarchive:
+        src: /opt/openjdk-17.0.2_linux-x64_bin.tar.gz
+        dest: /opt
+        remote_src: yes
+    - name: Move to jdk-17
+      command: mv /opt/jdk-17.0.2/ /opt/jdk-17/
 
     - name: Add Jenkins repository key using keyserver
       apt_key:
