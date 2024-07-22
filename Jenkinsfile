@@ -4,8 +4,8 @@ pipeline {
         label 'k8s-slave'
     } 
     tools {
-        maven 'Maven-3.9.7'
-        jdk 'JDK-17'
+        maven 'maven-3.9.4'
+        jdk 'jdk-11'
     }
     environment {
         APPLICATION_NAME = "eureka"
