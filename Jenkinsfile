@@ -31,12 +31,12 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*jar', followSymlinks: false
             }
         }
-        // stage ('Unit Tests'){
-        //     steps {
-        //         echo "Performing Unit Tests for ${env.APPLICATION_NAME} application"
-        //         sh "mvn test"
-        //     }
-        // }
+        stage ('Unit Tests'){
+            steps {
+                echo "Performing Unit Tests for ${env.APPLICATION_NAME} application"
+                sh "mvn test"
+            }
+        }
         // stage ('sonar') {
         //     steps {
         //         echo "Starting SonarScan with quality gate"
