@@ -1,10 +1,10 @@
 // Test file
 pipeline {
     agent {
-        label 'maven-slave'
+        label 'k8s'
     } 
     tools {
-        maven 'Maven-3.8.8'
+        maven 'Maven-3.9.7'
         jdk 'JDK-17'
     }
     environment {
