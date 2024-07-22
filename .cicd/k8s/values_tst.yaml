@@ -1,0 +1,15 @@
+name: i27-eureka
+fullname: i27-eureka-tst
+repliacas:
+  default: 2
+image:
+  name: devopswithcloudhub/i27eurekaproject
+  tag: tst
+resources:
+    requests: 
+        memory: "128Mi"
+        cpu: "250m"
+    limits: 
+        memory: "256Mi"
+        cpu: "500m"
+targetport: 8761
